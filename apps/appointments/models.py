@@ -1,8 +1,9 @@
 from django.db import models
 
+
 class Appointment(models.Model):
     provider_name = models.CharField(max_length=100)
-    appointment_datetime = models.DateTimeField() 
+    appointment_datetime = models.DateTimeField()
     client_email = models.EmailField()
 
     def __str__(self):
