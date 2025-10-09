@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Pay for Appointment</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        #card-element {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Pay for Appointment with {{ appointment.provider_name }}</h2>
+    <p>Amount: ₹{{ amount }}</p>
+
+    <div>
+        <label>Name</label>
+        <input id="name" placeholder="Your Name" />
+    </div>
+
+    <div id="card-element"></div>
+    <button id="pay-button">Pay ₹{{ amount }}</button>
+
+    <script>
+        const stripe = Stripe("{{ STRIPE_PUBLISHABLE_KEY }}");
+        const elements = stripe.elements();
+        const card = elements.create("card");
+        card.mount("#card-element");
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        document.getElementById("pay-button").addEventListener("click", async () => {
+            const csrftoken = getCookie('csrftoken');
+
+            // Step 1: Create PaymentIntent
+            const resp = await fetch("{% url 'create_payment' appointment.id %}", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json", 
+                    "X-CSRFToken": csrftoken 
+                },
+                body: JSON.stringify({})
+            });
+
+            const data = await resp.json();
+
+            if (data.error) {
+                // Redirect to result page with failed status
+                window.location.href = "{% url 'payment_result' %}?status=failed&message=" + encodeURIComponent(data.error);
+                return;
+            }
+
+            const clientSecret = data.client_secret;
+
+            // Step 2: Confirm the payment
+            const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: { 
+                    card: card, 
+                    billing_details: { name: document.getElementById("name").value || "Test User" } 
+                }
+            });
+
+            // Step 3: Redirect to payment_result page
+            if (error) {
+                window.location.href = "{% url 'payment_result' %}?status=failed&message=" + encodeURIComponent(error.message);
+            } else if (paymentIntent.status === "succeeded") {
+                window.location.href = "{% url 'payment_result' %}?status=succeeded&payment_id=" + paymentIntent.id;
+            } else {
+                window.location.href = "{% url 'payment_result' %}?status=" + paymentIntent.status;
+            }
+        });
+    </script>
+</body>
+</html>

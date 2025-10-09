@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Payment Status</title>
+</head>
+<body>
+    <h2>Payment Status</h2>
+
+    {% if status == 'succeeded' %}
+        <p style="color: green;">Payment succeeded! Payment ID: {{ payment_id }}</p>
+    {% elif status == 'failed' %}
+        <p style="color: red;">Payment failed: {{ message }}</p>
+    {% else %}
+        <p>Payment status: {{ status }}</p>
+    {% endif %}
+
+    <a href="{% url 'book_appointment' %}">Go Back to Appointment Booking</a>
+</body>
+</html>
