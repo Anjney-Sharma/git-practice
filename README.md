@@ -1,5 +1,8 @@
 # a59ae98d8bf64c45a0c306ff2541f5e6
 
+
+## Part 1 Book Appointment with Stripe Integration
+
 # Sofia Health
 
 Sofia Health is a Django-based web application for managing healthcare appointments.
@@ -49,21 +52,8 @@ http://127.0.0.1:8000/
 
 ---
 
-## (Optional) Deactivate Virtual Environment
-
-deactivate
-
----
-
 ✅ Your Django project **Sofia Health** is now ready to use!
 
-
-## About Stripe
-Stripe is a service that lets websites and apps accept online payments safely (like cards, UPI, wallets, etc.).It makes payment integration easy for developers and handles security in the background.
-
-### Stripe Integration in Project
-Stripe is used in this project to handle online payments for booked appointments. 
-When a user books an appointment, a payment intent is created using Stripe’s API, and the user is redirected to the payment page to complete the payment securely.
 
 ## URL Routes and Descriptions
 /  
@@ -80,3 +70,16 @@ When a user books an appointment, a payment intent is created using Stripe’s A
 
 /payment/result/  
     – Displays the result/status of the payment (success or failure).
+## About Stripe
+Stripe is a service that lets websites and apps accept online payments safely (like cards, UPI, wallets, etc.).It makes payment integration easy for developers and handles security in the background.
+
+### Stripe Integration in Project
+Stripe is used in this project to handle online payments for booked appointments. 
+When a user books an appointment, a payment intent is created using Stripe’s API, and the user is redirected to the payment page to complete the payment securely.
+
+## Part 2: Problem-Solving & Communication
+
+- If i have to handle thousands of bookings per day, firstly i would make the booking task asynchronus using Celery, so the server isn't blocked by slow operations. I would also optimize the database by organizing it well and adding indexes on important fields like appointment date.
+
+
+- I would give updates in simple language, focusing on what i have done and what the user can see, like what will happen if someone will click on something, and by doing something if a problem occurs, i would explain those problems briefly, why it’s happening, and what’s needed to fix it. And how it'll look once some task is done or the entire project is completed.
